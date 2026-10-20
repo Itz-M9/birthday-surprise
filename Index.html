@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080b10">
+<title>For Miti, with love 🩵</title>
+<style>
+  :root{--bg:#080b10;--white:#f8fbff;--blue:#91dfff;--blue2:#c7efff;--muted:#aebbc8;--line:rgba(145,223,255,.22)}
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--white);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow-x:hidden}
+  button{font:inherit;cursor:pointer}
+  .ambient{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0;background:radial-gradient(ellipse at 50% 10%,rgba(75,163,208,.12),transparent 48%),radial-gradient(ellipse at 90% 90%,rgba(145,223,255,.07),transparent 35%)}
+  .particle{position:absolute;width:4px;height:4px;border-radius:50%;background:var(--blue);opacity:.5;animation:drift linear infinite}
+  @keyframes drift{from{transform:translateY(110vh) translateX(0);opacity:0}15%{opacity:.6}85%{opacity:.35}to{transform:translateY(-10vh) translateX(45px);opacity:0}}
+  .progress{position:fixed;top:0;left:0;height:3px;width:0;background:var(--blue);z-index:20;box-shadow:0 0 15px var(--blue);transition:width .5s}
+  main{position:relative;z-index:1}
+  .screen{min-height:100svh;display:none;align-items:center;justify-content:center;padding:30px 20px;position:relative}
+  .screen.active{display:flex;animation:screenIn .75s ease both}
+  @keyframes screenIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+  .content{width:min(100%,680px);text-align:center;margin:auto}
+  .eyebrow{font-size:.74rem;letter-spacing:.22em;text-transform:uppercase;color:var(--blue);margin-bottom:18px}
+  h1,h2,p{margin-top:0}
+  h1{font-size:clamp(2.4rem,10vw,5.6rem);line-height:1.02;letter-spacing:-.055em;margin-bottom:20px}
+  h2{font-size:clamp(1.8rem,7vw,3.1rem);line-height:1.12;letter-spacing:-.035em;margin-bottom:18px}
+  .blue{color:var(--blue)}
+  .subtitle{font-size:clamp(1rem,3.8vw,1.2rem);line-height:1.8;color:var(--muted);max-width:520px;margin:0 auto 28px}
+  .banglish{font-size:1rem;line-height:1.85;color:#e2edf5}
+  .btn{border:1px solid var(--blue);border-radius:999px;padding:14px 23px;background:var(--blue);color:#071018;font-weight:750;box-shadow:0 0 24px rgba(145,223,255,.15);transition:transform .25s,box-shadow .25s,background .25s}
+  .btn:hover{transform:translateY(-2px);box-shadow:0 0 30px rgba(145,223,255,.32)}
+  .btn.secondary{background:transparent;color:var(--white);border-color:var(--line);box-shadow:none}
+  .btn.small{padding:11px 18px;font-size:.92rem}
+  .actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:28px}
+  .tiny{font-size:.8rem;color:#8594a3;margin-top:20px}
+  .heart{display:inline-block;color:var(--blue);animation:heartbeat 1.5s ease-in-out infinite}
+  @keyframes heartbeat{0%,100%{transform:scale(1)}14%{transform:scale(1.16)}28%{transform:scale(1)}42%{transform:scale(1.1)}}
+  .cake-wrap{width:220px;height:190px;position:relative;margin:20px auto 28px}
+  .cake{position:absolute;bottom:14px;left:28px;width:164px;height:82px;border-radius:12px 12px 18px 18px;background:linear-gradient(#fff,#dcebf2);box-shadow:0 14px 32px #0008}
+  .cake:before{content:"";position:absolute;top:18px;left:0;right:0;height:12px;background:var(--blue);border-radius:50%}
+  .cake:after{content:"";position:absolute;top:34px;left:0;right:0;height:5px;background:#b9eaff}
+  .plate{position:absolute;bottom:4px;left:13px;width:194px;height:18px;background:#dceaf2;border-radius:50%;box-shadow:0 5px 0 #91dfff55}
+  .candle{position:absolute;bottom:95px;left:104px;width:12px;height:42px;border-radius:5px 5px 2px 2px;background:repeating-linear-gradient(135deg,#fff 0 6px,#91dfff 6px 12px)}
+  .flame{position:absolute;bottom:137px;left:102px;width:16px;height:24px;background:radial-gradient(ellipse at 50% 70%,#fff 0 12%,#91dfff 30%,#4ba3d0 68%,transparent 70%);border-radius:50% 50% 45% 45%;transform-origin:50% 90%;animation:flicker .55s ease-in-out infinite alternate;filter:drop-shadow(0 0 9px #91dfff)}
+  @keyframes flicker{to{transform:rotate(7deg) scale(.86)}}
+  .cake.out .flame{opacity:0;transform:scale(.1);transition:.35s}
+  .cake.out .candle{opacity:.6}
+  .envelope{width:min(84vw,330px);height:205px;margin:25px auto 28px;position:relative;cursor:pointer;perspective:800px;filter:drop-shadow(0 15px 24px #0008)}
+  .env-back{position:absolute;inset:0;background:#eaf7ff;border-radius:8px}
+  .env-front{position:absolute;inset:0;background:linear-gradient(145deg,#fff,#d9effb);clip-path:polygon(0 0,50% 60%,100% 0,100% 100%,0 100%);border-radius:8px}
+  .env-flap{position:absolute;inset:0;background:linear-gradient(135deg,#c7efff,#fff);clip-path:polygon(0 0,100% 0,50% 60%);transform-origin:top;transition:transform .8s;z-index:4}
+  .env-seal{position:absolute;z-index:5;top:83px;left:calc(50% - 19px);width:38px;height:38px;border-radius:50%;background:var(--blue);color:#071018;display:grid;place-items:center;font-size:1.1rem;box-shadow:0 0 22px #91dfff77;transition:opacity .3s}
+  .envelope.open .env-flap{transform:rotateX(180deg)}
+  .envelope.open .env-seal{opacity:0}
+  .letter{position:absolute;z-index:2;left:8%;width:84%;bottom:10px;min-height:145px;background:white;color:#111;padding:22px 18px;border-radius:5px;transition:transform .8s;box-shadow:0 0 20px #0002}
+  .envelope.open .letter{transform:translateY(-85px)}
+  .letter strong{color:#257da5}
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:30px 0}
+  .flip-card{min-height:170px;perspective:800px;cursor:pointer;text-align:left}
+  .flip-inner{position:relative;width:100%;height:100%;min-height:170px;transition:transform .65s;transform-style:preserve-3d}
+  .flip-card.flipped .flip-inner{transform:rotateY(180deg)}
+  .face{position:absolute;inset:0;border:1px solid var(--line);border-radius:18px;padding:17px;background:linear-gradient(150deg,#101923,#090d13);backface-visibility:hidden;display:flex;flex-direction:column;justify-content:space-between}
+  .face.back{transform:rotateY(180deg);background:#eaf8ff;color:#0a1720;border-color:#eaf8ff}
+  .face .number{font-size:.72rem;letter-spacing:.15em;color:var(--blue)}
+  .face.back .number{color:#2c7b9e}
+  .face h3{font-size:1rem;margin:12px 0}
+  .face p{font-size:.86rem;line-height:1.6;margin:0}
+  .proposal-line{max-width:570px;margin:18px auto;line-height:1.85;color:#d7e2eb;font-size:1.03rem}
+  .love-title{font-size:clamp(3.5rem,16vw,7.5rem);font-weight:900;letter-spacing:-.08em;line-height:.95;color:var(--blue);text-shadow:0 0 30px #91dfff3d;animation:loveIn 1s cubic-bezier(.2,.8,.2,1) both}
+  @keyframes loveIn{from{opacity:0;transform:scale(.65) rotate(-4deg)}to{opacity:1;transform:scale(1) rotate(0)}}
+  .question{font-size:clamp(1.65rem,6vw,2.6rem);line-height:1.15;margin:24px 0}
+  .answer-area{position:relative;display:flex;align-items:center;justify-content:center;gap:14px;min-height:120px;flex-wrap:wrap;margin-top:20px}
+  #yesBtn{min-width:125px;z-index:2;transform-origin:center;transition:transform .35s cubic-bezier(.2,.9,.3,1.2),box-shadow .3s}
+  #noBtn{z-index:3;transition:opacity .3s,transform .3s,visibility .3s}
+  .answer-note{font-size:.82rem;color:#7f91a1;min-height:22px;margin-top:8px}
+  .success-heart{font-size:5rem;animation:heartbeat 1s infinite;filter:drop-shadow(0 0 22px #91dfff88);margin:20px}
+  .footer{font-size:.8rem;color:#758594;margin-top:40px}
+  .floating-heart{position:fixed;z-index:10;pointer-events:none;animation:floatHeart 2.6s ease-out forwards;font-size:20px}
+  @keyframes floatHeart{0%{opacity:0;transform:translateY(15px) scale(.6) rotate(-10deg)}15%{opacity:1}100%{opacity:0;transform:translateY(-180px) scale(1.3) rotate(25deg)}}
+  .confetti{position:fixed;top:-20px;z-index:15;width:7px;height:12px;pointer-events:none;animation:fall 3.2s linear forwards}
+  @keyframes fall{to{transform:translateY(110vh) rotate(720deg);opacity:.2}}
+  .reduced *{animation-duration:.01ms!important;transition-duration:.01ms!important}
+  @media(max-width:540px){.cards{grid-template-columns:1fr;gap:10px}.flip-card,.flip-inner{min-height:125px}.face{padding:15px}.face h3{margin:7px 0}.screen{padding:26px 18px}.cake-wrap{transform:scale(.9);margin-top:4px}.answer-area{gap:9px}}
+</style>
+</head>
+<body>
+<div class="ambient" id="ambient" aria-hidden="true"></div><div class="progress" id="progress"></div>
+<main>
+  <section class="screen active" id="s1">
+    <div class="content">
+      <div class="eyebrow">A little birthday surprise</div>
+      <h1>Hey, <span class="blue">Miti</span> 🤍</h1>
+      <p class="subtitle">I made a little something for you.<br><span class="banglish">Only for u 🫠🩵</span></p>
+      <button class="btn" onclick="go(2)">Open your surprise →</button>
+      <p class="tiny">Made with care, just for you.</p>
+    </div>
+  </section>
+  <section class="screen" id="s2">
+    <div class="content">
+      <div class="eyebrow">Today is all about you</div>
+      <h1>Happy Birthday,<br><span class="blue">Miti!</span> 🎂</h1>
+      <div class="cake-wrap" id="cakeWrap"><div class="cake" id="cake"><div class="candle"></div><div class="flame"></div></div><div class="plate"></div></div>
+      <p class="subtitle">Another year, another reason to smile.<br><span class="banglish">Ajker din-ta tomar motoi beautiful hok. Always keep that pretty smile.</span></p>
+      <button class="btn" onclick="makeWish()">Make a little wish ✨</button>
+      <div class="actions"><button class="btn secondary small" onclick="go(3)">Continue →</button></div>
+    </div>
+  </section>
+  <section class="screen" id="s3">
+    <div class="content">
+      <div class="eyebrow">A little note for you</div>
+      <h2>Something from<br><span class="blue">my heart</span> 💌</h2>
+      <p class="subtitle">Tap the envelope to open your letter.</p>
+      <div class="envelope" id="envelope" onclick="openLetter()" role="button" tabindex="0" aria-label="Open the letter">
+        <div class="env-back"></div>
+        <div class="letter"><strong>Dear Miti,</strong><p style="font-size:.87rem;line-height:1.55;margin:9px 0 0">Some people make ordinary moments feel a little more special.</p></div>
+        <div class="env-front"></div><div class="env-flap"></div><div class="env-seal">♡</div>
+      </div>
+      <p class="banglish">Ar kichu manush ache, jader sathe kotha bolle mon-ta emnitei bhalo hoye jay.</p>
+      <div class="actions"><button class="btn" onclick="go(4)">There's one more thing →</button></div>
+    </div>
+  </section>
+  <section class="screen" id="s4">
+    <div class="content">
+      <div class="eyebrow">Just a few little thoughts</div>
+      <h2>Little things that<br><span class="blue">make me smile</span></h2>
+      <p class="subtitle">Tap each card. 🤍</p>
+      <div class="cards">
+        <div class="flip-card" tabindex="0" onclick="this.classList.toggle('flipped')"><div class="flip-inner"><div class="face"><span class="number">01 / THE CONVERSATIONS</span><h3>Time flies</h3><p>Tap to read ↗</p></div><div class="face back"><span class="number">A LITTLE THOUGHT</span><p>Kotha bolte bolte kokhon je time chole jay, bujha jay na. 🩵</p></div></div></div>
+        <div class="flip-card" tabindex="0" onclick="this.classList.toggle('flipped')"><div class="flip-inner"><div class="face"><span class="number">02 / THAT SMILE</span><h3>Keep smiling</h3><p>Tap to read ↗</p></div><div class="face back"><span class="number">A LITTLE WISH</span><p>Hope ajke tomar mukhe onekgula smile ashe. 🤍</p></div></div></div>
+        <div class="flip-card" tabindex="0" onclick="this.classList.toggle('flipped')"><div class="flip-inner"><div class="face"><span class="number">03 / ONE MORE THING</span><h3>Something honest</h3><p>Tap to read ↗</p></div><div class="face back"><span class="number">FROM ME</span><p>Birthday gift-er ektachotto part ekhono baki… 🫠</p></div></div></div>
+      </div>
+      <button class="btn" onclick="go(5)">One last thing, Miti →</button>
+    </div>
+  </section>
+  <section class="screen" id="s5">
+    <div class="content">
+      <div class="eyebrow">I want to be honest with you</div>
+      <p class="proposal-line">Miti, there's something I've wanted to tell you…</p>
+      <div class="love-title">I LOVE<br>YOU. <span class="heart">🩵</span></div>
+      <p class="proposal-line">Ye churail meri pasandida aurat 🫠🖤 Tumko aj ham meri dil ki baat keh denge jo mai kuch dinse kehna chata tha 🫠...Plz be mine forever 🫠🖤 just hold my hand until the end of our life, be like that current er tar 👀Literally ami ayta message a ba reality tew bolte partam but I wanna make more special something to you 🤍</p>
+      <h2 class="question">Do you love me too,<br><span class="blue">Miti?</span> 🥹</h2>
+      <p class="subtitle" style="font-size:.93rem">Whatever you feel, I wanted to be honest with you. 🤍</p>
+      <div class="answer-area" id="answerArea">
+        <button class="btn" id="yesBtn" onclick="sayYes()">YES! 🩵</button>
+        <button class="btn secondary" id="noBtn" onclick="noPressed()">NO 🤍</button>
+      </div>
+      <div class="answer-note" id="answerNote" aria-live="polite"></div>
+    </div>
+  </section>
+  <section class="screen" id="s6">
+    <div class="content">
+      <div class="eyebrow">A little moment to remember</div>
+      <div class="success-heart">♡</div>
+      <h1>You've made<br>me smile, <span class="blue">Miti.</span></h1>
+      <p class="subtitle">This makes me really happy. 🩵<br><span class="banglish">Ami khub happy je tumi-o emon feel koro. Let's take things one step at a time.</span></p>
+      <p class="banglish">Happy Birthday abar-o, Miti. Bhalo theko, always. 🤍</p>
+      <p class="footer">Made with care, just for you.</p>
+      <button class="btn secondary small" onclick="restart()">Replay the surprise ↺</button>
+    </div>
+  </section>
+</main>
+<script>
+const screens=[...document.querySelectorAll('.screen')];
+let current=1, noCount=0, letterOpened=false;
+function go(n){
+  screens.forEach(s=>s.classList.remove('active'));
+  document.getElementById('s'+n).classList.add('active');
+  current=n;document.getElementById('progress').style.width=((n-1)/5*100)+'%';
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(n===5){setTimeout(()=>heartBurst(7),450)}
+}
+function makeWish(){
+  document.getElementById('cake').classList.add('out');
+  confettiBurst(34);heartBurst(9);
+  const b=document.querySelector('#s2 .btn');
+  b.textContent='Your wish is safe with me 🩵';
+}
+function openLetter(){
+  if(letterOpened)return;
+  letterOpened=true;document.getElementById('envelope').classList.add('open');heartBurst(6);
+}
+document.getElementById('envelope').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openLetter()}});
+function noPressed(){
+  noCount++;
+  const yes=document.getElementById('yesBtn'), no=document.getElementById('noBtn'), note=document.getElementById('answerNote');
+  const scale=Math.min(1+noCount*.42,3.1);
+  yes.style.transform='scale('+scale+')';
+  yes.style.boxShadow='0 0 '+Math.min(24+noCount*12,70)+'px rgba(145,223,255,.5)';
+  heartBurst(3+Math.min(noCount,5));
+  if(noCount===1)note.textContent='Are you sure? 🥺';
+  else if(noCount===2)note.textContent='The YES button is getting bigger… 🩵';
+  else if(noCount===3)note.textContent='One more tap and it might take over the screen 😭';
+  else if(noCount>=4){
+    // Keep a clear way to decline; the playful effect never disables the NO choice.
+    no.style.transform='scale(.88)';
+    note.textContent='Hehe, the YES is growing—but your answer is still yours. 🤍';
+  }
+}
+function sayYes(){go(6);confettiBurst(90);heartBurst(22)}
+function restart(){noCount=0;letterOpened=false;document.getElementById('yesBtn').style.transform='scale(1)';document.getElementById('yesBtn').style.boxShadow='';document.getElementById('noBtn').style.transform='';document.getElementById('answerNote').textContent='';document.getElementById('cake').classList.remove('out');document.getElementById('envelope').classList.remove('open');document.querySelector('#s2 .btn').textContent='Make a little wish ✨';go(1)}
+function heartBurst(count=5){
+  const symbols=['♡','♥','🩵','✦'];
+  for(let i=0;i<count;i++){
+    const el=document.createElement('span');el.className='floating-heart';el.textContent=symbols[Math.floor(Math.random()*symbols.length)];
+    el.style.left=(10+Math.random()*80)+'vw';el.style.top=(45+Math.random()*40)+'vh';el.style.color=Math.random()>.35?'#91dfff':'#fff';el.style.animationDelay=(Math.random()*.35)+'s';
+    document.body.appendChild(el);setTimeout(()=>el.remove(),3100);
+  }
+}
+function confettiBurst(count=30){
+  for(let i=0;i<count;i++){
+    const el=document.createElement('i');el.className='confetti';el.style.left=Math.random()*100+'vw';
+    el.style.background=Math.random()>.5?'#91dfff':'#ffffff';el.style.animationDelay=(Math.random()*.8)+'s';el.style.animationDuration=(2.2+Math.random()*1.8)+'s';
+    document.body.appendChild(el);setTimeout(()=>el.remove(),4500);
+  }
+}
+(function makeParticles(){
+  const root=document.getElementById('ambient');
+  for(let i=0;i<28;i++){const p=document.createElement('i');p.className='particle';p.style.left=Math.random()*100+'%';p.style.animationDuration=(12+Math.random()*22)+'s';p.style.animationDelay=(-Math.random()*28)+'s';p.style.opacity=(.15+Math.random()*.45);p.style.width=p.style.height=(2+Math.random()*3)+'px';root.appendChild(p)}
+})();
+</script>
+</body>
+</html>
